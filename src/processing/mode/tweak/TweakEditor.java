@@ -436,22 +436,18 @@ public class TweakEditor extends JavaEditor
         	header += 	"if(type.contains(\"/tm_change_creature_body\")) {\n" + 
         			
         				"	String creatureClassFromOSC = msg.get(0).stringValue();\n" + 
-        				"	Class<?> creatureClass = null;\n" +
+        				"	Class<Creature> creatureClass = null;\n" +
         				"	try {\n" +
-        				"		creatureClass = Class.forName(creatureClassFromOSC);\n" + 
+        				"		creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" + 
         				"	} catch(Exception ex) {ex.printStackTrace();}\n" +
         				
         				"	String creatureBodyFromOSC = msg.get(1).stringValue();\n" +
         				
-        				"   Class<?> creatureBody = null;\n" +
+        				"   Class<Body> creatureBody = null;\n" +
         				"	try {\n" +
-        				"		creatureBody = Class.forName(creatureBodyFromOSC);\n" +
+        				"		creatureBody = (Class<Body>) Class.forName(creatureBodyFromOSC);\n" +
         				"	} catch(Exception ex) {ex.printStackTrace();}" +
         				
-        				// TEST!! PRINT TO CONSOLE.
-        				"	println(\"Hi there! You successfully sent the creature string: \" + creatureClassFromOSC);\n" +
-        				
-        				"//	Body body = null;\n" +
         				"//	try {\n" +
         				"//		creature = creatureClass.newInstance();\n" +
         				"//	} catch (Exception ex) {ex.printStackTrace();}\n" +
@@ -463,48 +459,48 @@ public class TweakEditor extends JavaEditor
         				
 			header += 	"if(type.contains(\"tm_change_creature_limb\")) {\n" + 
 						"  String creatureClassFromOSC = msg.get(0).stringValue();\n" + 
-						"  Class<?> creatureClass = null;\n" +
+						"  Class<Creature> creatureClass = null;\n" +
 						"  try {\n" +
-						"  creatureClass = Class.forName(creatureClassFromOSC);\n" +
+						"  creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" +
 						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
 						"  String creatureLimbManagerFromOSC = msg.get(1).stringValue();\n" +
-						"  Class<?> creatureLimbManager = null;\n" +
+						"  Class<LimbManager> creatureLimbManager = null;\n" +
 						"  try {\n" +
-						"    creatureLimbManager = Class.forName(creatureLimbManagerFromOSC);\n" +
+						"    creatureLimbManager = (Class<LimbManager>) Class.forName(creatureLimbManagerFromOSC);\n" +
 						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
 						"// TEST!! PRINT TO CONSOLE.\n" +
-						"  println(\"The creature limb string from OSC: \" + creatureLimbManagerFromOSC);\n" +
-						"  println(\"creatureLimbManager: \" + creatureLimbManager);\n" +
+						"//  println(\"The creature limb string from OSC: \" + creatureLimbManagerFromOSC);\n" +
+						"//  println(\"creatureLimbManager: \" + creatureLimbManager);\n" +
 						"  World.getPopulationDirector().setLimbManagerForAllCreaturesOfClass(creatureClass, creatureLimbManager);\n" +
 						"};\n";
 			
 			header +=   "if(type.contains(\"tm_add_behaviour\")) {\n" +
 						"  String creatureClassFromOSC = msg.get(0).stringValue();\n" +
-						"  Class<?> creatureClass = null;\n" +
+						"  Class<Creature> creatureClass = null;\n" +
 						"  try {\n" +
-						"    creatureClass = Class.forName(creatureClassFromOSC);\n" +
+						"    creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" +
 						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
 						"  String behaviourFromOSC = msg.get(1).stringValue();\n" +
-						"  Class<?> behaviour = null;\n" +
+						"  Class<Behaviour> behaviour = null;\n" +
 						"  try {\n" +
-						"    behaviour = Class.forName(behaviourFromOSC);\n" +
+						"    behaviour = (Class<Behaviour>) Class.forName(behaviourFromOSC);\n" +
 						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
-						"  println(\"a behaviour to add: \" + behaviour);\n" +
+						"//  println(\"a behaviour to add: \" + behaviour);\n" +
 						"  World.getPopulationDirector().addBehaviourForAllCreaturesOfClass(creatureClass, behaviour);\n" +
 						"};\n";
 			
 			header +=   "if(type.contains(\"tm_remove_behaviour\")) {\n" +
 						"  String creatureClassFromOSC = msg.get(0).stringValue();\n" +
-						"  Class<?> creatureClass = null;  \n" +
+						"  Class<Creature> creatureClass = null;  \n" +
 						"  try {\n" +
-						"    creatureClass = Class.forName(creatureClassFromOSC);\n" +
+						"    creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" +
 						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
 						"  String behaviourFromOSC = msg.get(1).stringValue();\n" +
-						"  Class<?> behaviour = null;\n" +
+						"  Class<Behaviour> behaviour = null;\n" +
 						"  try {\n" +
-						"    behaviour = Class.forName(behaviourFromOSC);\n" +
+						"    behaviour = (Class<Behaviour>) Class.forName(behaviourFromOSC);\n" +
 						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
-						"  println(\"a behaviour to remove: \" + behaviour);\n" +
+						"//  println(\"a behaviour to remove: \" + behaviour);\n" +
 						"  World.getPopulationDirector().removeBehaviourForAllCreaturesOfClass(creatureClass, behaviour);\n" +
 						"};";
         				
