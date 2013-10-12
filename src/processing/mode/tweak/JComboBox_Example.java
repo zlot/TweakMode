@@ -11,7 +11,7 @@ import netP5.*;
 
 @SuppressWarnings("serial")
 public class JComboBox_Example extends JPanel
-                          implements ActionListener {
+                          implements ActionListener, ItemListener {
 	
 	
 	JFrame frame;
@@ -60,8 +60,6 @@ public class JComboBox_Example extends JPanel
 				for(int i=0;i<msg.arguments().length;i++) {
 					allBehaviours[i] = msg.get(i).stringValue();
 				}
-				// unpack all strings
-				// wipe checkbox panel
 				// recreate checkbox panel
 				createCheckBoxPanel(allBehaviours);
 			}
@@ -181,12 +179,23 @@ public class JComboBox_Example extends JPanel
         behaviourLabelOSCTest.setText("This is label3");
         checkBoxPanel.add(behaviourLabelOSCTest);
         
+ //////////////////// IM HERE.
+  //////////////// WHAT NEEDS TO DO, is 
+        ///////// on creature selection change on this end, send a msg to sketch,
+        ///////// which will send a msg back here that contains the string names 
+        ///////// of all behaviours on that creature!
         
         for(int i=0;i<allBehaviours.length;i++) {
         	JCheckBox checkBox = new JCheckBox(allBehaviours[i]);
         	checkBox.setSelected(true);
+        	checkBox.addItemListener(this);
         	checkBoxPanel.add(checkBox);
         }
+        
+        
+        ///////////////////////////
+        /////////// Need to create onChange listeners as well, so can add 
+        /////////// the ticked behaviour / remove the ticked behaviour from sketch.
         
         add(checkBoxPanel);
         
@@ -195,7 +204,34 @@ public class JComboBox_Example extends JPanel
         frame.pack();
     }
     
-    
+    /** Listens to the check boxes. */
+    public void itemStateChanged(ItemEvent e) {
+        JCheckBox source = (JCheckBox) e.getItemSelectable();
+        
+        // get value of selected item for creatureList.
+        String creatureString = (String) creatureList.getSelectedItem();
+        
+        // get string of behaviour from source
+        String behaviourString = source.getText();
+
+        
+        //Now that we know which button was pushed, find out
+        //whether it was selected or deselected.
+        if (e.getStateChange() == ItemEvent.DESELECTED) {
+        	// send osc msg to remove this behaviour
+            try {
+    			OSCSender.sendBehaviour(creatureString, behaviourString, false, 9999);
+    		} catch (Exception e1) { System.out.println("error sending OSC message!"); }
+        } else {
+        	// WAS CHECKED.
+        	// send osc msg to add this behaviour
+            try {
+    			OSCSender.sendBehaviour(creatureString, behaviourString, true, 9999);
+    		} catch (Exception e1) { System.out.println("error sending OSC message!"); }
+        }
+        
+
+    }
     
 
     /** Listens to the combo box. */

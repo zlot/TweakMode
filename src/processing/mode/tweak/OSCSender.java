@@ -83,5 +83,25 @@ public class OSCSender {
 		}
 	}
 	
+	public static void sendBehaviour(String creatureClass, String behaviour, boolean addBehaviour, int port) throws Exception
+	{
+		OSCPortOut sender = new OSCPortOut(InetAddress.getByName("localhost"), port);
+		ArrayList<Object> args = new ArrayList<Object>();
+		args.add(new String(creatureClass));
+		args.add(new String(behaviour));
+		
+		OSCMessage msg;
+		if(addBehaviour == true) 
+			msg = new OSCMessage("/tm_add_behaviour", args);
+		else
+			msg = new OSCMessage("/tm_remove_behaviour", args);
+			
+		try {
+			sender.send(msg);
+		} catch (Exception e) {
+			System.out.println("TweakMode: error sending new value of String: " + creatureClass);
+			System.out.println(e.toString());
+		}
+	}
 	
 }

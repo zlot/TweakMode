@@ -477,7 +477,36 @@ public class TweakEditor extends JavaEditor
 						"  println(\"creatureLimbManager: \" + creatureLimbManager);\n" +
 						"  World.getPopulationDirector().setLimbManagerForAllCreaturesOfClass(creatureClass, creatureLimbManager);\n" +
 						"};\n";
-        				
+			
+			header +=   "if(type.contains(\"tm_add_behaviour\")) {\n" +
+						"  String creatureClassFromOSC = msg.get(0).stringValue();\n" +
+						"  Class<?> creatureClass = null;\n" +
+						"  try {\n" +
+						"    creatureClass = Class.forName(creatureClassFromOSC);\n" +
+						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  String behaviourFromOSC = msg.get(1).stringValue();\n" +
+						"  Class<?> behaviour = null;\n" +
+						"  try {\n" +
+						"    behaviour = Class.forName(behaviourFromOSC);\n" +
+						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  println(\"a behaviour to add: \" + behaviour);\n" +
+						"  World.getPopulationDirector().addBehaviourForAllCreaturesOfClass(creatureClass, behaviour);\n" +
+						"};\n";
+			
+			header +=   "if(type.contains(\"tm_remove_behaviour\")) {\n" +
+						"  String creatureClassFromOSC = msg.get(0).stringValue();\n" +
+						"  Class<?> creatureClass = null;  \n" +
+						"  try {\n" +
+						"    creatureClass = Class.forName(creatureClassFromOSC);\n" +
+						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  String behaviourFromOSC = msg.get(1).stringValue();\n" +
+						"  Class<?> behaviour = null;\n" +
+						"  try {\n" +
+						"    behaviour = Class.forName(behaviourFromOSC);\n" +
+						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  println(\"a behaviour to remove: \" + behaviour);\n" +
+						"  World.getPopulationDirector().removeBehaviourForAllCreaturesOfClass(creatureClass, behaviour);\n" +
+						"};";
         				
 ///////////////////////////////////////////////////////////        
 ///////////////////////////////////////////////////////////
