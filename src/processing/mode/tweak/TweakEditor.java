@@ -22,9 +22,6 @@
 
 package processing.mode.tweak;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -51,7 +48,6 @@ import processing.app.EditorToolbar;
 import processing.app.Mode;
 import processing.app.Sketch;
 import processing.app.SketchCode;
-import processing.app.SketchException;
 import processing.app.syntax.JEditTextArea;
 import processing.app.syntax.PdeTextAreaDefaults;
 import processing.app.syntax.SyntaxDocument;
@@ -95,7 +91,6 @@ public class TweakEditor extends JavaEditor
 		
 		createJComboBoxWindow();
 		
-		
 	}
 	
 	
@@ -105,12 +100,10 @@ public class TweakEditor extends JavaEditor
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
             	/* singleton pattern. */
-            	JComboBox_Example.getInstance();
+            	MainWindow.getInstance();
             }
         });
 	}
-	
-	
 	
 	
 	
@@ -433,6 +426,84 @@ public class TweakEditor extends JavaEditor
         }
 ///////////////////////////////////////////////////////////
         /////////// MY ADDITIONS ///////////////////////////
+        
+
+    		
+        	header += 	"if(type.contains(\"tm_creature_behaviours_request\")) {\n" +
+        				"  // gather up all behaviours that are attached to this creature\n" +
+        				"  String creatureClassFromOSC = msg.get(0).stringValue();\n" +
+        				"  Class<?> creatureClass = null;\n" +
+        				"  try {\n" +
+        				"    creatureClass = Class.forName(creatureClassFromOSC);\n" +
+        				"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+        				"  boolean CREATURE_EXISTS = false;\n" +
+        				"  String[] behaviourStrings = null;\n" +
+        				"  // look through creatures, on first find of this creature:\n" +
+        				"  for(Creature c : World.getPopulationDirector().getCreatures()) {\n" +
+        				"    if(c.getClass().equals(creatureClass)) {\n" +
+        				"    CREATURE_EXISTS = true;\n" +
+        				"      // get all behaviour class names from behaviours[] & send back.\n" +
+        				"      Map<Class<? extends Behaviour>, Behaviour> behaviours = c.getBehaviourManager().getBehaviours();\n" +
+        				"      behaviourStrings = new String[behaviours.size()];\n" +
+        				"      int i=0;\n" +
+        				"      for(Entry<Class<? extends Behaviour>, Behaviour> entry : behaviours.entrySet()) {\n" +
+        				"        behaviourStrings[i] = entry.getKey().getName();\n" +
+        				"        i++;\n" +
+        				"      }\n" +
+        				"      break;\n" +
+        				"    }\n" +
+        				"  }\n" +
+        				"  if(CREATURE_EXISTS) {\n" +
+        				"    /* send this msg to the receiving interface window MainWindow! */\n" +
+        				"    OscMessage oscMsgOfBehaviours = new OscMessage(\"/behaviours_of_creature\");\n" +
+        				"    for(int i=0; i<behaviourStrings.length; i++) {\n" +
+        				"      oscMsgOfBehaviours.add(behaviourStrings[i]);\n" +
+        				"    };\n" +
+        				"    sendMessageViaOSC(oscMsgOfBehaviours);\n" +
+        				"  }\n" +
+        				"}\n";
+        
+        	
+        
+        
+        
+        
+        
+        
+        
+//        	header += 	"if(type.contains(\"tm_creature_behaviours_request\")) {\n" +
+//        				"  // gather up all behaviours that are attached to this creature\n" +
+//        				"  String creatureClassFromOSC = msg.get(0).stringValue();\n" +
+//        				"  Class<?> creatureClass = null;\n" +
+//        				"  try {\n" +
+//        				"    creatureClass = Class.forName(creatureClassFromOSC);\n" +
+//        				"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+//        				"  // look through creatures, on first find of this creature:\n" +
+//        				"  for(Creature c : World.getPopulationDirector.getCreatures()) {\n" +
+//        				"    if(c.getClass().equals(creatureClass)) {\n" +
+//        				"      // get all behaviour class names from behaviours[] & send back.\n" +
+//        				"      behaviours = c.getBehaviourManager().getBehaviours();\n" +
+//        				"      String[] behaviourStrings = new String[behaviours.size()];\n" +
+//        				"      int i=0;\n" +
+//        				"      for(Entry<Class<? extends Behaviour>, Behaviour> entry : behaviours.entrySet()) {\n" +
+//        				"        behaviourStrings[i] = entry.getKey();\n" +
+//        				"        i++;\n" +
+//        				"      }\n" +
+//        				"      break;\n" +
+//        				"    }\n" +
+//        				"  }\n" +
+//        				"  /* send this msg to the receiving interface window MainWindow! */\n" +
+//        				"  OscMessage oscMsgOfBehaviours = new OscMessage(\"/behaviours_of_creature\");\n" +
+//        				"  for(int i=0; i<behaviourStrings.length; i++) {\n" +
+//        				"    oscMsgOfBehaviours.add(behaviourStrings[i]);\n" +
+//        				"  };\n" +
+//        				"  sendMessageViaOSC(oscMsgOfBehaviours);\n" +
+//        				"}\n";
+        				
+        
+        
+        
+        
         	header += 	"if(type.contains(\"/tm_change_creature_body\")) {\n" + 
         			
         				"	String creatureClassFromOSC = msg.get(0).stringValue();\n" + 
@@ -538,12 +609,13 @@ public class TweakEditor extends JavaEditor
     	
     	
     	/* add all behaviours in the behaviours string (found in sketch) */
-	    addToSetup +=    "  OscMessage myMessage = new OscMessage(\"/behaviour_list\");\n" +
+	    addToSetup +=    "  OscMessage messageOfBehaviours = new OscMessage(\"/behaviour_list\");\n" +
 						 "  for(int i=0; i<behaviours.length; i++) {\n" +
-						 "      myMessage.add(behaviours[i]);\n" +
+						 "      messageOfBehaviours.add(behaviours[i]);\n" +
 						 "  };\n";
-	    /* send msg to osc so UI can read it */
-	    addToSetup +=    "  sendMessageViaOSC(myMessage);\n";
+	    
+	    /* send msg via osc so UI can read behaviours */
+	    addToSetup +=    "  sendMessageViaOSC(messageOfBehaviours);\n";
     	
     	setupStartPos = SketchParser.getSetupStart(c);
     	c = replaceString(c, setupStartPos, setupStartPos, addToSetup);

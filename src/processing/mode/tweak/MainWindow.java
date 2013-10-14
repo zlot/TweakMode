@@ -10,7 +10,7 @@ import netP5.*;
 
 
 @SuppressWarnings("serial")
-public class JComboBox_Example extends JPanel
+public class MainWindow extends JPanel
                           implements ActionListener, ItemListener {
 	
 	
@@ -29,9 +29,9 @@ public class JComboBox_Example extends JPanel
 	MyOSCReceiver myOSCReceiver;
 	
 	
-	private static JComboBox_Example singleton = new JComboBox_Example(); // thread-safe.
+	private static MainWindow singleton = new MainWindow(); // thread-safe.
 	
-	public static JComboBox_Example getInstance() {
+	public static MainWindow getInstance() {
 		return singleton;
 	}
 	
@@ -40,12 +40,13 @@ public class JComboBox_Example extends JPanel
 		myOSCReceiver = new MyOSCReceiver();
 	}
 	
+	
+/***** INNER CLASS OSC RECEIVER *****/	
 	public class MyOSCReceiver {
 
 		OscP5 oscP5;
 		NetAddress myRemoteLocation;
 
-		
 		MyOSCReceiver() {
 	       oscP5 = new OscP5(this,12001);
 		}
@@ -63,12 +64,33 @@ public class JComboBox_Example extends JPanel
 				// recreate checkbox panel
 				createCheckBoxPanel(allBehaviours);
 			}
+			
+			
+			/* sent by sketch when asked to provide all behaviours a creature is using */
+			if(type.contains("/behaviours_of_creature")) {
+				
+				String[] creatureBehaviours = new String[msg.arguments().length];
+				
+				for(int i=0;i<msg.arguments().length;i++) {
+					creatureBehaviours[i] = msg.get(i).stringValue();
+				}
+				
+				for(String behaviourOfCreature : creatureBehaviours) {
+					System.out.println(behaviourOfCreature);
+				}
+				
+				// TODO::
+				// tick the checkboxes that correlate to the name in creatureBehaviours[i].
+				// and uncheck the ones that dont!
+				// note: maybe uncheck ALL, then go through and tick as needed.
+			}
+			
 		}	
 		
 	}
 	
 	
-    private JComboBox_Example() {
+    private MainWindow() {
     	//Create and set up the window.
     	setOpaque(true); // content panes must be opaque.    	
     	setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -89,7 +111,15 @@ public class JComboBox_Example extends JPanel
     
     private void createAndAddComponents() {
         ////* creature dropdown *////
-        String[] creatureStrings = { "creature.virus.Virus", "creature.bacteria.Bacteria" };
+        String[] creatureStrings = {
+        		"creature.virus.Virus",
+        		"creature.bacteria.Bacteria",
+        		"creature.millipede.Millipede",
+        		"creature.squarething.SquareThing",
+        		"creature.trianglething.TriangleThing",
+        		"creature.worm.Worm",
+        		"worldofcreatures$Car"
+        	};
         
         creatureList = new JComboBox(creatureStrings);
         creatureList.setName("creatureList");
@@ -102,7 +132,14 @@ public class JComboBox_Example extends JPanel
         
         
         ////* creature body dropdown *////
-        String[] creatureBodyStrings = { "creature.virus.VirusBody", "creature.millipede.MillipedeBody", "creature.bacteria.BacteriaBody" };
+        String[] creatureBodyStrings = {
+        		"creature.virus.VirusBody",
+        		"creature.bacteria.BacteriaBody",
+        		"creature.millipede.MillipedeBody",
+        		"creature.squarething.SquareThingBody",
+        		"creature.trianglething.TriangleThingBody",
+        		"creature.worm.WormBody"
+    		};
         
         JComboBox creatureBodyList = new JComboBox(creatureBodyStrings);
         creatureBodyList.setName("creatureBodyList");
@@ -118,7 +155,11 @@ public class JComboBox_Example extends JPanel
         creatureBodyLabel.setPreferredSize(new Dimension(165, 40));
         
         ////* creature limbManager dropdown *////
-        String[] creatureLimbManagerStrings = {"creature.virus.TentacleManager", "creature.bacteria.FeelerManager"};
+        String[] creatureLimbManagerStrings = {
+        		"creature.virus.TentacleManager",
+        		"creature.bacteria.FeelerManager",
+        		"null"
+        		};
         
         JComboBox creatureLimbManagerList = new JComboBox(creatureLimbManagerStrings);
         creatureLimbManagerList.setName("creatureLimbManagerList");
@@ -192,11 +233,6 @@ public class JComboBox_Example extends JPanel
         	checkBoxPanel.add(checkBox);
         }
         
-        
-        ///////////////////////////
-        /////////// Need to create onChange listeners as well, so can add 
-        /////////// the ticked behaviour / remove the ticked behaviour from sketch.
-        
         add(checkBoxPanel);
         
         revalidate();
@@ -242,6 +278,18 @@ public class JComboBox_Example extends JPanel
         // get value of selected item for creatureList.
         String creatureString = (String) creatureList.getSelectedItem();
         
+        
+        /* used to send a msg to sketch requesting the behaviours a creature is using */
+        if(selectedComboBox.getName().equals("creatureList")) {
+        	try {
+        		OSCSender.sendCreatureBehavioursRequest(creatureString, 9999);
+        	} catch (Exception e1) {
+        		System.out.println("error sending OSC message!");
+        	}
+        	
+        }
+        
+        
         if(selectedComboBox.getName().equals("creatureBodyList")) {
 	        String creatureBodyString = (String) selectedComboBox.getSelectedItem();
 	        updateLabel(creatureBodyString);
@@ -285,7 +333,7 @@ public class JComboBox_Example extends JPanel
 
     /** Returns an ImageIcon, or null if the path was invalid. */
     protected static ImageIcon createImageIcon(String path) {
-        java.net.URL imgURL = JComboBox_Example.class.getResource(path);
+        java.net.URL imgURL = MainWindow.class.getResource(path);
         if (imgURL != null) {
             return new ImageIcon(imgURL);
         } else {
