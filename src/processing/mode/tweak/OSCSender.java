@@ -54,6 +54,31 @@ public class OSCSender {
 	
 //////////////////////////////////////////////
 	/////////////// MY ADDITIONS //////////////
+	public static void sendAddCreatureToWorld(String creatureClass, int port) throws Exception
+	{
+		OSCPortOut sender = new OSCPortOut(InetAddress.getByName("localhost"), port);
+		ArrayList<Object> args = new ArrayList<Object>();
+		args.add(new String(creatureClass));
+		OSCMessage msg = new OSCMessage("/tm_add_creature", args);
+		try {
+			sender.send(msg);
+		} catch (Exception e) {
+			System.out.println("TweakMode: error sending new value of String: " + creatureClass);
+			System.out.println(e.toString());
+		}
+	}
+	public static void sendRemoveAllCreatures(int port) throws Exception
+	{
+		OSCPortOut sender = new OSCPortOut(InetAddress.getByName("localhost"), port);
+		ArrayList<Object> args = new ArrayList<Object>();
+//		args.add(new String(creatureClass));
+		OSCMessage msg = new OSCMessage("/tm_remove_all_creatures", args);
+		try {
+			sender.send(msg);
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+	}
 	public static void sendCreatureBehavioursRequest(String creatureClass, int port) throws Exception
 	{
 		OSCPortOut sender = new OSCPortOut(InetAddress.getByName("localhost"), port);

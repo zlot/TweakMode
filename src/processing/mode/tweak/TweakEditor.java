@@ -427,7 +427,24 @@ public class TweakEditor extends JavaEditor
 ///////////////////////////////////////////////////////////
         /////////// MY ADDITIONS ///////////////////////////
         
-
+        	header +=   "if(type.contains(\"tm_add_creature\")) {\n" +
+        				"  String creatureClassFromOSC = msg.get(0).stringValue();\n" +
+        				"  Class<Creature> creatureClass = null;\n" +
+        				"  try {\n" +
+        				"    creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" +
+        				"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+        				"  //println(creatureClass.getName());\n" +
+        				"  World.getPopulationDirector().addCreatures(creatureClass, 1);\n" +
+        				"}\n";
+        	
+        	header +=   "if(type.contains(\"tm_remove_all_creatures\")) {\n" +
+    					"  //String creatureClassFromOSC = msg.get(0).stringValue();\n" +
+    					"  //Class<Creature> creatureClass = null;\n" +
+    					"  //try {\n" +
+    					"  //  creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" +
+    					"  //} catch(Exception ex) {ex.printStackTrace();}\n" +
+    					"  World.getPopulationDirector().removeAllCreatures();\n" +
+    					"}\n";
     		
         	header += 	"if(type.contains(\"tm_creature_behaviours_request\")) {\n" +
         				"  // gather up all behaviours that are attached to this creature\n" +
@@ -463,65 +480,24 @@ public class TweakEditor extends JavaEditor
         				"  }\n" +
         				"}\n";
         
-        	
-        
-        
-        
-        
-        
-        
-        
-//        	header += 	"if(type.contains(\"tm_creature_behaviours_request\")) {\n" +
-//        				"  // gather up all behaviours that are attached to this creature\n" +
-//        				"  String creatureClassFromOSC = msg.get(0).stringValue();\n" +
-//        				"  Class<?> creatureClass = null;\n" +
-//        				"  try {\n" +
-//        				"    creatureClass = Class.forName(creatureClassFromOSC);\n" +
-//        				"  } catch(Exception ex) {ex.printStackTrace();}\n" +
-//        				"  // look through creatures, on first find of this creature:\n" +
-//        				"  for(Creature c : World.getPopulationDirector.getCreatures()) {\n" +
-//        				"    if(c.getClass().equals(creatureClass)) {\n" +
-//        				"      // get all behaviour class names from behaviours[] & send back.\n" +
-//        				"      behaviours = c.getBehaviourManager().getBehaviours();\n" +
-//        				"      String[] behaviourStrings = new String[behaviours.size()];\n" +
-//        				"      int i=0;\n" +
-//        				"      for(Entry<Class<? extends Behaviour>, Behaviour> entry : behaviours.entrySet()) {\n" +
-//        				"        behaviourStrings[i] = entry.getKey();\n" +
-//        				"        i++;\n" +
-//        				"      }\n" +
-//        				"      break;\n" +
-//        				"    }\n" +
-//        				"  }\n" +
-//        				"  /* send this msg to the receiving interface window MainWindow! */\n" +
-//        				"  OscMessage oscMsgOfBehaviours = new OscMessage(\"/behaviours_of_creature\");\n" +
-//        				"  for(int i=0; i<behaviourStrings.length; i++) {\n" +
-//        				"    oscMsgOfBehaviours.add(behaviourStrings[i]);\n" +
-//        				"  };\n" +
-//        				"  sendMessageViaOSC(oscMsgOfBehaviours);\n" +
-//        				"}\n";
-        				
-        
-        
-        
-        
         	header += 	"if(type.contains(\"/tm_change_creature_body\")) {\n" + 
         			
         				"	String creatureClassFromOSC = msg.get(0).stringValue();\n" + 
         				"	Class<Creature> creatureClass = null;\n" +
         				"	try {\n" +
         				"		creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" + 
-        				"	} catch(Exception ex) {ex.printStackTrace();}\n" +
+        				"	} catch(Exception ex) {}\n" +
         				
         				"	String creatureBodyFromOSC = msg.get(1).stringValue();\n" +
         				
         				"   Class<Body> creatureBody = null;\n" +
         				"	try {\n" +
         				"		creatureBody = (Class<Body>) Class.forName(creatureBodyFromOSC);\n" +
-        				"	} catch(Exception ex) {ex.printStackTrace();}" +
+        				"	} catch(Exception ex) {}" +
         				
         				"//	try {\n" +
         				"//		creature = creatureClass.newInstance();\n" +
-        				"//	} catch (Exception ex) {ex.printStackTrace();}\n" +
+        				"//	} catch (Exception ex) {}\n" +
         				
         				"println(\"creatureBody: \" + creatureBody);\n" +
         				"	World.getPopulationDirector().setBodyForAllCreaturesOfClass(creatureClass, creatureBody);\n" +
@@ -533,12 +509,12 @@ public class TweakEditor extends JavaEditor
 						"  Class<Creature> creatureClass = null;\n" +
 						"  try {\n" +
 						"  creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" +
-						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  } catch(Exception ex) {}\n" +
 						"  String creatureLimbManagerFromOSC = msg.get(1).stringValue();\n" +
 						"  Class<LimbManager> creatureLimbManager = null;\n" +
 						"  try {\n" +
 						"    creatureLimbManager = (Class<LimbManager>) Class.forName(creatureLimbManagerFromOSC);\n" +
-						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  } catch(Exception ex) {}\n" +
 						"// TEST!! PRINT TO CONSOLE.\n" +
 						"//  println(\"The creature limb string from OSC: \" + creatureLimbManagerFromOSC);\n" +
 						"//  println(\"creatureLimbManager: \" + creatureLimbManager);\n" +
@@ -550,12 +526,12 @@ public class TweakEditor extends JavaEditor
 						"  Class<Creature> creatureClass = null;\n" +
 						"  try {\n" +
 						"    creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" +
-						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  } catch(Exception ex) {}\n" +
 						"  String behaviourFromOSC = msg.get(1).stringValue();\n" +
 						"  Class<Behaviour> behaviour = null;\n" +
 						"  try {\n" +
 						"    behaviour = (Class<Behaviour>) Class.forName(behaviourFromOSC);\n" +
-						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  } catch(Exception ex) {}\n" +
 						"//  println(\"a behaviour to add: \" + behaviour);\n" +
 						"  World.getPopulationDirector().addBehaviourForAllCreaturesOfClass(creatureClass, behaviour);\n" +
 						"};\n";
@@ -565,12 +541,12 @@ public class TweakEditor extends JavaEditor
 						"  Class<Creature> creatureClass = null;  \n" +
 						"  try {\n" +
 						"    creatureClass = (Class<Creature>) Class.forName(creatureClassFromOSC);\n" +
-						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  } catch(Exception ex) {}\n" +
 						"  String behaviourFromOSC = msg.get(1).stringValue();\n" +
 						"  Class<Behaviour> behaviour = null;\n" +
 						"  try {\n" +
 						"    behaviour = (Class<Behaviour>) Class.forName(behaviourFromOSC);\n" +
-						"  } catch(Exception ex) {ex.printStackTrace();}\n" +
+						"  } catch(Exception ex) {}\n" +
 						"//  println(\"a behaviour to remove: \" + behaviour);\n" +
 						"  World.getPopulationDirector().removeBehaviourForAllCreaturesOfClass(creatureClass, behaviour);\n" +
 						"};";
@@ -592,10 +568,12 @@ public class TweakEditor extends JavaEditor
     	}
     	header += "}\n\n";
     	header += "void tweakmode_initOSC() {\n";
-    	header += "  tweakmode_oscP5 = new OscP5(tweakmode_oscHandler,"+oscPort+");\n";
-    	header += "   OscMessage myMessage = new OscMessage(\"/behaviour_list\");\n" + 
-    			  "   myMessage.add(\"test osc from sketch to swing window.\");\n" + 
-    			  "   tweakmode_oscP5.send(myMessage, new NetAddress(\"127.0.0.1\",12001));\n";
+    	header += "  tweakmode_oscP5 = new OscP5(tweakmode_oscHandler,"+oscPort+");\n" +
+    			  // Turn console logger OFF.
+    			  "  OscP5.setLogStatus(Logger.OFF);\n";
+    	header += "   //OscMessage myMessage = new OscMessage(\"/behaviour_list\");\n" + 
+    			  "   //myMessage.add(\"test osc from sketch to swing window.\");\n" + 
+    			  "   //tweakmode_oscP5.send(myMessage, new NetAddress(\"127.0.0.1\",12001));\n";
     	header += "}\n";
     	
     	header += "void sendMessageViaOSC(OscMessage msg) {\n" + 
